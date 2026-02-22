@@ -1,0 +1,74 @@
+{
+  "tracks": [
+    {
+      "id": 1,
+      "title": "Dreams & Nightmares",
+      "artist": "Anmi Beatz",
+      "genre": "hip-hop",
+      "image": "assets/images/music-covers/Title-1.jpg",
+      "audioFile": "audio/dreams-and-nightmares.mp3",
+      "youtubeLink": "https://youtube.com/watch?v=YOUR_VIDEO_ID",
+      "spotifyLink": "https://open.spotify.com/track/YOUR_TRACK_ID",
+      "releaseDate": "2024-01-15",
+      "featured": true,
+      "plays": 125000,
+      "duration": "3:45"
+    },
+    {
+      "id": 2,
+      "title": "Midnight Vibes",
+      "artist": "Anmi Beatz",
+      "genre": "trap",
+      "image": "assets/images/music-covers/Title-2.jpg",
+      "audioFile": "audio/midnight-vibes.mp3",
+      "youtubeLink": "https://youtube.com/watch?v=YOUR_VIDEO_ID",
+      "spotifyLink": "https://open.spotify.com/track/YOUR_TRACK_ID",
+      "releaseDate": "2024-01-10",
+      "featured": true,
+      "plays": 98000,
+      "duration": "2:58"
+    },
+    {
+      "id": 3,
+      "title": "Urban Flow",
+      "artist": "Anmi Beatz",
+      "genre": "rap",
+      "image": "assets/images/music-covers/Title-3.jpg",
+      "audioFile": "audio/urban-flow.mp3",
+      "youtubeLink": "https://youtube.com/watch?v=YOUR_VIDEO_ID",
+      "spotifyLink": "https://open.spotify.com/track/YOUR_TRACK_ID",
+      "releaseDate": "2024-01-05",
+      "featured": false,
+      "plays": 75000,
+      "duration": "3:12"
+    },
+    {
+      "id": 4,
+      "title": "Street Symphony",
+      "artist": "Anmi Beatz",
+      "genre": "instrumental",
+      "image": "assets/images/music-covers/Title-4.jpg",
+      "audioFile": "audio/street-symphony.mp3",
+      "youtubeLink": "https://youtube.com/watch?v=YOUR_VIDEO_ID",
+      "spotifyLink": "https://open.spotify.com/track/YOUR_TRACK_ID",
+      "releaseDate": "2023-12-20",
+      "featured": true,
+      "plays": 150000,
+      "duration": "4:02"
+    },
+    {
+      "id": 5,
+      "title": "Neon Lights",
+      "artist": "Anmi Beatz",
+      "genre": "r&b",
+      "image": "assets/images/music-covers/Title-5.jpg",
+      "audioFile": "audio/neon-lights.mp3",
+      "youtubeLink": "https://youtube.com/watch?v=YOUR_VIDEO_ID",
+      "spotifyLink": "https://open.spotify.com/track/YOUR_TRACK_ID",
+      "releaseDate": "2023-12-15",
+      "featured": false,
+      "plays": 85000,
+      "duration": "3:28"
+    }
+  ]
+}
