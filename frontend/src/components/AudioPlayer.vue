@@ -31,6 +31,7 @@
         </div>
 
         <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+          <span class="stream-on-label">Stream on</span>
           <a
             v-if="typeof track?.spotify_link === 'string' && track.spotify_link.trim()"
             :href="track.spotify_link"
@@ -309,9 +310,10 @@ watch(
   position: fixed !important;
   left: 0 !important;
   right: 0 !important;
-  background: linear-gradient(180deg, rgba(3, 7, 18, 0.98) 0%, rgba(0, 0, 0, 1) 100%);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 -4px 30px rgba(6, 182, 212, 0.08);
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.58) 0%, rgba(3, 7, 18, 0.72) 100%);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  box-shadow: 0 -4px 30px rgba(6, 182, 212, 0.12);
 }
 .pb-safe {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
@@ -328,7 +330,7 @@ watch(
 .seek-slider::-webkit-slider-runnable-track {
   height: 0.45rem;
   border-radius: 9999px;
-  background: linear-gradient(90deg, rgba(34, 211, 238, 0.35) 0%, rgba(192, 132, 252, 0.35) 100%);
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.35) 0%, rgba(125, 211, 252, 0.35) 100%);
 }
 .seek-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -343,7 +345,7 @@ watch(
 .seek-slider::-moz-range-track {
   height: 0.45rem;
   border-radius: 9999px;
-  background: linear-gradient(90deg, rgba(34, 211, 238, 0.35) 0%, rgba(192, 132, 252, 0.35) 100%);
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.35) 0%, rgba(125, 211, 252, 0.35) 100%);
 }
 .seek-slider::-moz-range-thumb {
   width: 1.2rem;
@@ -359,6 +361,12 @@ watch(
   padding: 0.25rem 0.3rem;
   transition: transform 0.2s, filter 0.2s, color 0.2s;
 }
+.stream-on-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  color: #9ca3af;
+  margin-right: 0.2rem;
+}
 .stream-icon:hover {
   transform: translateY(-1px);
   filter: brightness(1.15);
@@ -370,6 +378,9 @@ watch(
   color: #ef4444;
 }
 @media (max-width: 640px) {
+  .stream-on-label {
+    display: none;
+  }
   .stream-icon {
     font-size: 1.9rem;
     padding: 0.25rem 0.3rem;

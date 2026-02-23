@@ -71,6 +71,7 @@ class TrackController extends Controller
             'featured' => 'boolean',
         ]);
 
+        $validated['artist'] = $this->resolveCanonicalArtist($validated['artist']);
         $validated['audio_url'] = $validated['audio_url'] ?? null;
         $validated['duration'] = $validated['duration'] ?? null;
 
@@ -107,6 +108,10 @@ class TrackController extends Controller
             'plays' => 'integer',
         ]);
 
+        if (array_key_exists('artist', $validated)) {
+            $validated['artist'] = $this->resolveCanonicalArtist($validated['artist'], (int) $track->id);
+        }
+
         $track->update($validated);
         return $track;
     }
@@ -118,5 +123,32 @@ class TrackController extends Controller
     {
         Track::findOrFail($id)->delete();
         return response()->json(['message' => 'Track deleted successfully']);
+    }
+
+    /**
+     * Keep the first artist casing ever stored, based on case-insensitive match.
+     * Example: "SAJKA" exists -> later "sajka" saves as "SAJKA".
+     */
+    private function resolveCanonicalArtist(string $artist, ?int $excludeTrackId = null): string
+    {
+        $normalized = trim(preg_replace('/\s+/', ' ', $artist) ?? $artist);
+        if ($normalized === '') {
+            return $artist;
+        }
+
+        $query = Track::query()
+            ->whereRaw('LOWER(artist) = ?', [strtolower($normalized)]);
+
+        if ($excludeTrackId !== null) {
+            $query->where('id', '!=', $excludeTrackId);
+        }
+
+        $existing = $query
+            ->orderBy('id', 'asc')
+            ->value('artist');
+
+        return is_string($existing) && trim($existing) !== ''
+            ? trim($existing)
+            : $normalized;
     }
 }

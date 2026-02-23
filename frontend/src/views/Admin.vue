@@ -2,7 +2,7 @@
   <div class="anmi-page min-h-screen text-white pt-24 pb-16">
     <div class="max-w-4xl mx-auto px-4">
       <div v-if="!adminToken" class="admin-glass p-8 rounded-2xl border border-cyan-500/20 shadow-glow">
-        <h1 class="text-2xl sm:text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Admin</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-sky-400 bg-clip-text text-transparent">Admin</h1>
         <p class="text-gray-400 mb-6">Enter your admin token to continue.</p>
         <form @submit.prevent="submitToken" class="space-y-4">
           <input
@@ -22,7 +22,7 @@
       <div v-else class="space-y-10">
         <div class="admin-glass p-8 rounded-2xl border border-cyan-500/20 shadow-glow">
           <div class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Add Song</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-sky-400 bg-clip-text text-transparent">Add Song</h1>
             <button
               type="button"
               @click="logout"
@@ -55,7 +55,27 @@
                 maxlength="255"
                 placeholder="Artist"
                 class="input-neon w-full px-4 py-3 rounded-xl bg-black/40 border border-cyan-500/30 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                autocomplete="off"
+                @focus="showArtistMenu = true"
+                @blur="hideArtistMenuSoon"
+                @input="onArtistInput"
+                @keydown="onArtistInputKeydown"
               >
+              <div
+                v-if="showArtistMenu && artistSuggestions.length > 0"
+                class="mt-2 max-h-44 overflow-auto rounded-lg border border-cyan-500/20 bg-black/70"
+              >
+                <button
+                  v-for="artist in artistSuggestions"
+                  :key="artist"
+                  type="button"
+                  class="w-full text-left px-3 py-2 text-sm hover:bg-cyan-500/15"
+                  @mousedown.prevent="selectArtist(artist)"
+                >
+                  {{ artist }}
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-gray-500">Artist names auto-reuse existing casing (case-insensitive).</p>
               <p v-if="errors.artist" class="mt-1 text-red-400 text-sm">{{ errors.artist }}</p>
             </div>
 
@@ -77,7 +97,7 @@
                   v-model="form.youtube_link"
                   type="url"
                   placeholder="https://youtube.com/watch?v=..."
-                  class="input-neon w-full px-4 py-3 rounded-xl bg-black/40 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
+                  class="input-neon w-full px-4 py-3 rounded-xl bg-black/40 border border-sky-500/30 text-white placeholder-gray-500 focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20"
                 >
                 <p v-if="errors.youtube_link" class="mt-1 text-red-400 text-sm">{{ errors.youtube_link }}</p>
               </div>
@@ -141,9 +161,9 @@
                 class="w-full px-4 py-6 rounded-xl border-2 border-dashed border-cyan-500/40 hover:border-cyan-400/60 hover:bg-cyan-500/5 transition text-gray-400 hover:text-cyan-300 flex flex-col items-center gap-2"
               >
                 <i class="fas fa-cloud-upload-alt text-xl sm:text-2xl"></i>
-                <span>{{ form.coverFile ? form.coverFile.name : "Choose image (JPEG, PNG, GIF, WebP, max 5MB)" }}</span>
+                <span>{{ form.coverFile ? form.coverFile.name : `Choose image (JPEG, PNG, GIF, WebP, max ${MAX_IMAGE_SIZE_MB}MB)` }}</span>
               </button>
-              <img v-if="coverPreviewUrl" :src="coverPreviewUrl" alt="Cover preview" class="mt-3 h-32 sm:h-44 w-full rounded-xl object-cover border border-cyan-500/20">
+              <img v-if="coverPreviewUrl" :src="coverPreviewUrl" alt="Cover preview" class="mt-3 h-40 w-40 sm:h-44 sm:w-44 rounded-xl object-cover border border-cyan-500/20">
               <p v-if="errors.cover" class="mt-1 text-red-400 text-sm">{{ errors.cover }}</p>
             </div>
 
@@ -159,7 +179,7 @@
               <button
                 type="button"
                 @click="audioInput?.click()"
-                class="w-full px-4 py-6 rounded-xl border-2 border-dashed border-purple-500/40 hover:border-purple-400/60 hover:bg-purple-500/5 transition text-gray-400 hover:text-purple-300 flex flex-col items-center gap-2"
+                class="w-full px-4 py-6 rounded-xl border-2 border-dashed border-sky-500/40 hover:border-sky-400/60 hover:bg-sky-500/5 transition text-gray-400 hover:text-sky-300 flex flex-col items-center gap-2"
               >
                 <i class="fas fa-music text-xl sm:text-2xl"></i>
                 <span>{{ form.audioFile ? form.audioFile.name : "Choose audio (MP3, WAV, OGG, M4A, AAC, FLAC, max 25MB)" }}</span>
@@ -206,7 +226,7 @@
         </div>
 
         <div class="admin-glass p-8 rounded-2xl border border-cyan-500/20 shadow-glow">
-          <h2 class="text-xl font-bold mb-6 bg-gradient-to-r from-cyan-400/90 to-purple-400/90 bg-clip-text text-transparent">Your tracks</h2>
+          <h2 class="text-xl font-bold mb-6 bg-gradient-to-r from-cyan-400/90 to-sky-400/90 bg-clip-text text-transparent">Your tracks</h2>
           <p v-if="loadingTracks" class="text-gray-400">Loading...</p>
           <p v-else-if="tracks.length === 0" class="text-gray-500">No tracks yet. Add one above.</p>
           <ul v-else class="space-y-4">
@@ -222,7 +242,7 @@
                   <input v-model="editForm.genre" type="text" required placeholder="Genres (comma-separated)" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm sm:col-span-2">
                   <input v-model="editForm.release_date" type="date" required class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm">
                   <input v-model="editForm.spotify_link" type="url" placeholder="Spotify URL" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm">
-                  <input v-model="editForm.youtube_link" type="url" placeholder="YouTube URL" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-purple-500/30 text-white text-sm sm:col-span-2">
+                  <input v-model="editForm.youtube_link" type="url" placeholder="YouTube URL" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-sky-500/30 text-white text-sm sm:col-span-2">
 
                   <div>
                     <label class="text-xs text-gray-500 block mb-1">New cover (optional)</label>
@@ -309,6 +329,8 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "") || "http://localhost:8000";
 const ADMIN_TOKEN_KEY = "anmi_admin_token";
+const MAX_IMAGE_SIZE_MB = 20;
+const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
 
 const PRESET_GENRES = [
   "Boom Bap",
@@ -368,6 +390,7 @@ const deleting = ref(false);
 
 const genreQuery = ref("");
 const showGenreMenu = ref(false);
+const showArtistMenu = ref(false);
 
 const form = reactive({
   title: "",
@@ -399,6 +422,49 @@ const filteredGenreOptions = computed(() => {
     if (alreadySelected) return false;
     return query ? genre.toLowerCase().includes(query) : true;
   });
+});
+
+const artistOptions = computed(() => {
+  const canonicalByKey = new Map();
+  const orderedTracks = [...tracks.value].sort((a, b) => (a?.id ?? 0) - (b?.id ?? 0));
+
+  orderedTracks.forEach((track) => {
+    const artist = typeof track?.artist === "string" ? track.artist.trim() : "";
+    if (!artist) return;
+    const key = artist.toLowerCase();
+    if (!canonicalByKey.has(key)) {
+      canonicalByKey.set(key, artist);
+    }
+  });
+
+  return [...canonicalByKey.values()].sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: "base" })
+  );
+});
+
+const artistLookup = computed(() => {
+  const map = new Map();
+  artistOptions.value.forEach((artist) => map.set(artist.toLowerCase(), artist));
+  return map;
+});
+
+const artistSuggestions = computed(() => {
+  const query = form.artist.trim().toLowerCase();
+  if (!query) return artistOptions.value.slice(0, 10);
+
+  const startsWith = [];
+  const contains = [];
+
+  artistOptions.value.forEach((artist) => {
+    const lower = artist.toLowerCase();
+    if (lower.startsWith(query)) {
+      startsWith.push(artist);
+    } else if (lower.includes(query)) {
+      contains.push(artist);
+    }
+  });
+
+  return [...startsWith, ...contains].slice(0, 10);
 });
 
 onMounted(() => {
@@ -476,6 +542,49 @@ function normalizeGenre(raw) {
   if (!cleaned) return "";
   const preset = PRESET_GENRES.find((genre) => genre.toLowerCase() === cleaned.toLowerCase());
   return preset || cleaned;
+}
+
+function normalizeArtist(raw) {
+  const cleaned = (raw || "").trim().replace(/\s+/g, " ");
+  if (!cleaned) return "";
+  return artistLookup.value.get(cleaned.toLowerCase()) || cleaned;
+}
+
+function onArtistInput() {
+  errors.artist = "";
+  showArtistMenu.value = true;
+}
+
+function selectArtist(artist) {
+  form.artist = artist;
+  errors.artist = "";
+  showArtistMenu.value = false;
+}
+
+function hideArtistMenuSoon() {
+  setTimeout(() => {
+    showArtistMenu.value = false;
+    form.artist = normalizeArtist(form.artist);
+  }, 120);
+}
+
+function onArtistInputKeydown(event) {
+  if (event.key === "Escape") {
+    showArtistMenu.value = false;
+    return;
+  }
+
+  if ((event.key === "Enter" || event.key === "Tab") && artistSuggestions.value.length > 0) {
+    selectArtist(artistSuggestions.value[0]);
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+    return;
+  }
+
+  if (event.key === "Enter") {
+    form.artist = normalizeArtist(form.artist);
+  }
 }
 
 function normalizeExternalUrl(raw) {
@@ -558,10 +667,9 @@ function isAllowedAudioFile(file) {
 async function onFileSelect(event) {
   const file = event.target.files?.[0];
   if (!file) return;
-  const max = 5 * 1024 * 1024;
   const allowed = ["image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp"];
-  if (file.size > max) {
-    errors.cover = "Image must be under 5MB.";
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    errors.cover = `Image must be under ${MAX_IMAGE_SIZE_MB}MB.`;
     return;
   }
   if (!allowed.includes(file.type)) {
@@ -596,9 +704,8 @@ async function onAudioSelect(event) {
 function onEditFileSelect(event) {
   const file = event.target.files?.[0];
   if (!file) return;
-  const max = 5 * 1024 * 1024;
   const allowed = ["image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp"];
-  if (file.size > max || !allowed.includes(file.type)) return;
+  if (file.size > MAX_IMAGE_SIZE_BYTES || !allowed.includes(file.type)) return;
   clearObjectUrl(editCoverPreviewUrl);
   editForm.coverFile = file;
   editCoverPreviewUrl.value = URL.createObjectURL(file);
@@ -650,6 +757,7 @@ function clearErrors() {
 
 async function submitTrack() {
   clearErrors();
+  form.artist = normalizeArtist(form.artist);
   const spotifyLink = normalizeExternalUrl(form.spotify_link);
   const youtubeLink = normalizeExternalUrl(form.youtube_link);
 
@@ -753,6 +861,7 @@ async function saveEdit(track) {
   savingEdit.value = true;
   const headers = { "X-Admin-Token": adminToken.value };
   try {
+    editForm.artist = normalizeArtist(editForm.artist);
     const spotifyLink = normalizeExternalUrl(editForm.spotify_link);
     const youtubeLink = normalizeExternalUrl(editForm.youtube_link);
     if (!isValidHttpUrl(spotifyLink)) throw new Error("Enter a valid Spotify URL.");
@@ -828,18 +937,18 @@ async function doDelete() {
 
 <style scoped>
 .admin-glass {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(168, 85, 247, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(96, 165, 250, 0.08) 100%);
   box-shadow: 0 0 40px rgba(6, 182, 212, 0.1);
 }
 .input-neon:focus {
   box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
 }
 .btn-primary {
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, #60a5fa 100%);
   box-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
 }
 .btn-primary:hover:not(:disabled) {
-  box-shadow: 0 0 35px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 35px rgba(96, 165, 250, 0.5);
   transform: translateY(-2px);
 }
 </style>

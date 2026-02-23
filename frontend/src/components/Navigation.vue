@@ -1,6 +1,6 @@
 <template>
   <nav class="nav-glass fixed w-full top-0 z-50 border-b border-cyan-500/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center">
+    <div class="w-full px-4 sm:px-8 xl:px-12 py-3 sm:py-4 flex justify-between items-center">
       <router-link to="/" class="flex items-center gap-2 group" @click="closeMenu">
         <img
           :src="logoUrl"
