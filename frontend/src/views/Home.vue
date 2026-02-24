@@ -112,7 +112,7 @@
                     aria-label="Sort by"
                   >
                     <optgroup label="Sort by">
-                      <option value="artist">Artist Name</option>
+                      <option value="artist">Artist</option>
                       <option value="title">Title</option>
                       <option value="genre">Genre</option>
                       <option value="release_date">Date</option>
