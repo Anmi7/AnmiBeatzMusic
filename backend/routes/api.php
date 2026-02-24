@@ -21,7 +21,9 @@ Route::post('/upload/audio', [UploadController::class, 'audio'])->middleware('ad
 
 // Admin-only: create/update/delete tracks
 Route::middleware('admin.token')->group(function () {
+    Route::get('/admin/tracks/deleted', [TrackController::class, 'deleted']);
     Route::post('/tracks', [TrackController::class, 'store']);
     Route::put('/tracks/{id}', [TrackController::class, 'update']);
     Route::delete('/tracks/{id}', [TrackController::class, 'destroy']);
+    Route::post('/tracks/{id}/restore', [TrackController::class, 'restore']);
 });

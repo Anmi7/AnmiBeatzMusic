@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Track extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'title',
         'artist',
@@ -24,5 +27,6 @@ class Track extends Model
     protected $casts = [
         'release_date' => 'date',
         'featured' => 'boolean',
+        'deleted_at' => 'datetime',
     ];
 }

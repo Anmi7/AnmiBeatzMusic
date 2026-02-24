@@ -43,10 +43,11 @@
               >
             </div>
             <div class="flex flex-wrap gap-2 items-center">
-              <div class="flex items-center gap-1">
+              <div class="filter-select-wrap">
                 <select
                   v-model="filterGenre"
-                  class="input-neon px-4 py-3 rounded-xl bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all min-w-[170px]"
+                  class="filter-select input-neon rounded-xl bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all"
+                  :class="{ 'with-clear': !!filterGenre }"
                 >
                   <option value="">Genre</option>
                   <option v-for="g in genres" :key="g" :value="g">{{ g }}</option>
@@ -55,17 +56,21 @@
                   v-if="filterGenre"
                   type="button"
                   @click="filterGenre = ''"
-                  class="h-[50px] w-[42px] rounded-xl border border-sky-500/40 bg-black/40 text-cyan-300 hover:text-cyan-200 hover:border-cyan-300/70 transition"
+                  class="filter-clear-btn"
                   title="Clear genre"
                   aria-label="Clear genre"
                 >
                   <i class="fas fa-times"></i>
                 </button>
+                <span class="filter-chevron" aria-hidden="true">
+                  <i class="fas fa-chevron-down"></i>
+                </span>
               </div>
-              <div class="flex items-center gap-1">
+              <div class="filter-select-wrap">
                 <select
                   v-model="sortBy"
-                  class="input-neon px-4 py-3 rounded-xl bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all min-w-[170px]"
+                  class="filter-select input-neon rounded-xl bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all"
+                  :class="{ 'with-clear': !!sortBy }"
                 >
                   <option value="">Sort by</option>
                   <option value="artist">Artist Name</option>
@@ -77,12 +82,15 @@
                   v-if="sortBy"
                   type="button"
                   @click="sortBy = ''"
-                  class="h-[50px] w-[42px] rounded-xl border border-sky-500/40 bg-black/40 text-cyan-300 hover:text-cyan-200 hover:border-cyan-300/70 transition"
+                  class="filter-clear-btn"
                   title="Clear sort"
                   aria-label="Clear sort"
                 >
                   <i class="fas fa-times"></i>
                 </button>
+                <span class="filter-chevron" aria-hidden="true">
+                  <i class="fas fa-chevron-down"></i>
+                </span>
               </div>
               <button
                 type="button"
@@ -393,6 +401,54 @@ function scrollToMusic() {
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(96, 165, 250, 0.08) 100%);
   border: 1px solid rgba(6, 182, 212, 0.15);
   box-shadow: 0 0 30px rgba(6, 182, 212, 0.08);
+}
+.filter-select-wrap {
+  position: relative;
+}
+.filter-select {
+  min-width: 170px;
+  height: 50px;
+  padding: 0.7rem 2.1rem 0.7rem 1rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.filter-select.with-clear {
+  padding-right: 4.1rem;
+}
+.filter-select::-ms-expand {
+  display: none;
+}
+.filter-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 1.9rem;
+  transform: translateY(-50%);
+  height: 1.35rem;
+  width: 1.35rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  background: rgba(2, 12, 26, 0.82);
+  color: #67e8f9;
+  font-size: 0.56rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+.filter-clear-btn:hover {
+  border-color: rgba(125, 211, 252, 0.8);
+  color: #cffafe;
+  background: rgba(8, 27, 47, 0.95);
+}
+.filter-chevron {
+  position: absolute;
+  top: 50%;
+  right: 0.78rem;
+  transform: translateY(-50%);
+  color: rgba(125, 211, 252, 0.9);
+  font-size: 0.74rem;
+  pointer-events: none;
 }
 .input-neon:focus {
   box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);

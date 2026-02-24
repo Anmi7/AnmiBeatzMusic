@@ -23,13 +23,21 @@
         <div class="admin-glass p-8 rounded-2xl border border-cyan-500/20 shadow-glow">
           <div class="flex justify-between items-center mb-8">
             <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-sky-400 bg-clip-text text-transparent">Add Song</h1>
-            <button
-              type="button"
-              @click="logout"
-              class="text-gray-400 hover:text-cyan-400 transition text-sm flex items-center gap-1"
-            >
-              <i class="fas fa-sign-out-alt"></i> Exit admin
-            </button>
+            <div class="flex items-center gap-3">
+              <router-link
+                to="/admin/tracks"
+                class="text-cyan-300 hover:text-cyan-200 transition text-sm flex items-center gap-1"
+              >
+                <i class="fas fa-table"></i> Manage tracks
+              </router-link>
+              <button
+                type="button"
+                @click="logout"
+                class="text-gray-400 hover:text-cyan-400 transition text-sm flex items-center gap-1"
+              >
+                <i class="fas fa-sign-out-alt"></i> Exit admin
+              </button>
+            </div>
           </div>
 
           <form @submit.prevent="submitTrack" class="space-y-6">
@@ -221,100 +229,12 @@
 
           <p v-if="submitError" class="mt-6 text-red-400 text-sm">{{ submitError }}</p>
           <p v-if="submitSuccess" class="mt-6 text-cyan-400 text-sm flex items-center gap-2">
-            <i class="fas fa-check-circle"></i> Song added. <router-link to="/" class="underline hover:text-cyan-300">View on site</router-link>
+            <i class="fas fa-check-circle"></i>
+            Song added.
+            <router-link to="/" class="underline hover:text-cyan-300">View on site</router-link>
+            <span class="text-cyan-500/60">|</span>
+            <router-link to="/admin/tracks" class="underline hover:text-cyan-300">Manage tracks</router-link>
           </p>
-        </div>
-
-        <div class="admin-glass p-8 rounded-2xl border border-cyan-500/20 shadow-glow">
-          <h2 class="text-xl font-bold mb-6 bg-gradient-to-r from-cyan-400/90 to-sky-400/90 bg-clip-text text-transparent">Your tracks</h2>
-          <p v-if="loadingTracks" class="text-gray-400">Loading...</p>
-          <p v-else-if="tracks.length === 0" class="text-gray-500">No tracks yet. Add one above.</p>
-          <ul v-else class="space-y-4">
-            <li
-              v-for="track in tracks"
-              :key="track.id"
-              class="flex flex-wrap items-center gap-4 p-4 rounded-xl bg-black/30 border border-gray-700/50"
-            >
-              <template v-if="editingId === track.id">
-                <form @submit.prevent="saveEdit(track)" class="flex-1 min-w-0 grid gap-3 sm:grid-cols-2">
-                  <input v-model="editForm.title" type="text" required placeholder="Title" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm">
-                  <input v-model="editForm.artist" type="text" required placeholder="Artist" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm">
-                  <input v-model="editForm.genre" type="text" required placeholder="Genres (comma-separated)" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm sm:col-span-2">
-                  <input v-model="editForm.release_date" type="date" required class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm">
-                  <input v-model="editForm.spotify_link" type="url" placeholder="Spotify URL" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white text-sm">
-                  <input v-model="editForm.youtube_link" type="url" placeholder="YouTube URL" class="input-neon px-3 py-2 rounded-lg bg-black/40 border border-sky-500/30 text-white text-sm sm:col-span-2">
-
-                  <div>
-                    <label class="text-xs text-gray-500 block mb-1">New cover (optional)</label>
-                    <input type="file" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" @change="onEditFileSelect" class="text-sm">
-                    <img v-if="editCoverPreviewUrl" :src="editCoverPreviewUrl" alt="New cover preview" class="mt-2 h-16 w-16 sm:h-20 sm:w-20 rounded object-cover border border-cyan-500/20">
-                  </div>
-
-                  <div>
-                    <label class="text-xs text-gray-500 block mb-1">New audio (optional)</label>
-                    <input type="file" accept=".mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*" @change="onEditAudioSelect" class="text-sm">
-                    <audio v-if="editAudioPreviewUrl" :src="editAudioPreviewUrl" controls class="mt-2 w-full"></audio>
-                  </div>
-
-                  <div class="flex gap-2 items-center sm:col-span-2">
-                    <button type="submit" :disabled="savingEdit" class="btn-primary py-2 px-4 rounded-lg text-sm font-bold">
-                      {{ savingEdit ? "Saving..." : "Save" }}
-                    </button>
-                    <button type="button" @click="cancelEdit" class="py-2 px-4 rounded-lg border border-gray-600 text-gray-400 hover:text-white text-sm">
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </template>
-
-              <template v-else>
-                <img :src="getImageUrl(track.image_url)" :alt="track.title" class="h-11 w-11 sm:h-14 sm:w-14 rounded object-cover bg-gray-800">
-                <div class="flex-1 min-w-0">
-                  <p class="font-medium truncate">{{ track.title }}</p>
-                  <p class="text-gray-400 text-sm truncate">{{ track.artist }} | {{ track.genre }}</p>
-                  <p class="text-gray-500 text-xs">{{ formatDate(track.release_date) }}</p>
-                </div>
-                <div class="text-xs text-gray-400">
-                  <i class="fas fa-music mr-1"></i>{{ hasAudio(track) ? "Audio set" : "No audio" }}
-                </div>
-                <div class="flex gap-2">
-                  <button
-                    type="button"
-                    @click="startEdit(track)"
-                    class="py-2 px-4 rounded-lg border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-sm"
-                  >
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                  <button
-                    type="button"
-                    @click="confirmDelete(track)"
-                    class="py-2 px-4 rounded-lg border border-red-500/50 text-red-400 hover:bg-red-500/10 text-sm"
-                  >
-                    <i class="fas fa-trash"></i> Delete
-                  </button>
-                </div>
-              </template>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="trackToDelete" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" @click.self="trackToDelete = null">
-      <div class="admin-glass p-6 rounded-2xl border border-cyan-500/20 max-w-md w-full">
-        <p class="text-white font-medium mb-2">Delete this song?</p>
-        <p class="text-gray-400 text-sm mb-4">"{{ trackToDelete.title }}" will be removed. This cannot be undone.</p>
-        <div class="flex gap-3">
-          <button
-            @click="doDelete"
-            :disabled="deleting"
-            class="flex-1 py-2 rounded-xl font-bold bg-red-600 hover:bg-red-500 text-white disabled:opacity-50"
-          >
-            {{ deleting ? "Deleting..." : "Delete" }}
-          </button>
-          <button @click="trackToDelete = null" class="flex-1 py-2 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-800">
-            Cancel
-          </button>
         </div>
       </div>
     </div>
@@ -323,11 +243,10 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "") || "http://localhost:8000";
 const ADMIN_TOKEN_KEY = "anmi_admin_token";
 const MAX_IMAGE_SIZE_MB = 20;
 const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
@@ -354,6 +273,7 @@ const PRESET_GENRES = [
 ].sort((a, b) => a.localeCompare(b));
 
 const router = useRouter();
+const route = useRoute();
 const adminToken = ref("");
 const tokenInput = ref("");
 const tokenError = ref("");
@@ -367,26 +287,6 @@ const submitting = ref(false);
 const submitError = ref("");
 const submitSuccess = ref(false);
 const tracks = ref([]);
-const loadingTracks = ref(false);
-
-const editingId = ref(null);
-const savingEdit = ref(false);
-const editForm = reactive({
-  title: "",
-  artist: "",
-  genre: "",
-  release_date: "",
-  spotify_link: "",
-  youtube_link: "",
-  coverFile: null,
-  audioFile: null,
-  duration: null,
-});
-const editCoverPreviewUrl = ref("");
-const editAudioPreviewUrl = ref("");
-
-const trackToDelete = ref(null);
-const deleting = ref(false);
 
 const genreQuery = ref("");
 const showGenreMenu = ref(false);
@@ -469,14 +369,18 @@ const artistSuggestions = computed(() => {
 
 onMounted(() => {
   const saved = sessionStorage.getItem(ADMIN_TOKEN_KEY);
-  if (saved) adminToken.value = saved;
+  if (saved) {
+    adminToken.value = saved;
+    const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "";
+    if (redirect) {
+      router.replace(redirect);
+    }
+  }
 });
 
 onBeforeUnmount(() => {
   clearObjectUrl(coverPreviewUrl);
   clearObjectUrl(audioPreviewUrl);
-  clearObjectUrl(editCoverPreviewUrl);
-  clearObjectUrl(editAudioPreviewUrl);
 });
 
 watch(adminToken, (val) => {
@@ -490,33 +394,14 @@ function clearObjectUrl(urlRef) {
   }
 }
 
-function getImageUrl(url) {
-  if (!url) return "";
-  if (typeof url === "string" && url.startsWith("http")) return url;
-  return `${API_BASE}${url.startsWith("/") ? url : "/" + url}`;
-}
-
-function formatDate(value) {
-  if (!value) return "";
-  const date = typeof value === "string" ? value : value?.date || value;
-  return String(date).slice(0, 10);
-}
-
-function hasAudio(track) {
-  return typeof track?.audio_url === "string" && track.audio_url.trim() !== "";
-}
-
 async function fetchTracks() {
   if (!adminToken.value) return;
-  loadingTracks.value = true;
   try {
     const res = await axios.get(`${API_URL}/tracks`);
     tracks.value = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
   } catch (error) {
     if (error.response?.status === 401) logout();
     else tracks.value = [];
-  } finally {
-    loadingTracks.value = false;
   }
 }
 
@@ -526,9 +411,15 @@ function submitToken() {
     tokenError.value = "Enter your admin token.";
     return;
   }
-  sessionStorage.setItem(ADMIN_TOKEN_KEY, tokenInput.value.trim());
-  adminToken.value = tokenInput.value.trim();
+  const token = tokenInput.value.trim();
+  sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+  adminToken.value = token;
   tokenInput.value = "";
+
+  const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "";
+  if (redirect) {
+    router.push(redirect);
+  }
 }
 
 function logout() {
@@ -701,27 +592,6 @@ async function onAudioSelect(event) {
   form.duration = await detectAudioDuration(file);
 }
 
-function onEditFileSelect(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  const allowed = ["image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp"];
-  if (file.size > MAX_IMAGE_SIZE_BYTES || !allowed.includes(file.type)) return;
-  clearObjectUrl(editCoverPreviewUrl);
-  editForm.coverFile = file;
-  editCoverPreviewUrl.value = URL.createObjectURL(file);
-}
-
-async function onEditAudioSelect(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  const max = 25 * 1024 * 1024;
-  if (file.size > max || !isAllowedAudioFile(file)) return;
-  clearObjectUrl(editAudioPreviewUrl);
-  editForm.audioFile = file;
-  editAudioPreviewUrl.value = URL.createObjectURL(file);
-  editForm.duration = await detectAudioDuration(file);
-}
-
 function formatDuration(seconds) {
   if (!Number.isFinite(seconds) || seconds <= 0) return null;
   const total = Math.floor(seconds);
@@ -833,104 +703,6 @@ async function submitTrack() {
     }
   } finally {
     submitting.value = false;
-  }
-}
-
-function startEdit(track) {
-  clearObjectUrl(editCoverPreviewUrl);
-  clearObjectUrl(editAudioPreviewUrl);
-  editingId.value = track.id;
-  editForm.title = track.title || "";
-  editForm.artist = track.artist || "";
-  editForm.genre = track.genre || "";
-  editForm.release_date = formatDate(track.release_date) || new Date().toISOString().slice(0, 10);
-  editForm.spotify_link = track.spotify_link || "";
-  editForm.youtube_link = track.youtube_link || "";
-  editForm.coverFile = null;
-  editForm.audioFile = null;
-  editForm.duration = track.duration || null;
-}
-
-function cancelEdit() {
-  editingId.value = null;
-  clearObjectUrl(editCoverPreviewUrl);
-  clearObjectUrl(editAudioPreviewUrl);
-}
-
-async function saveEdit(track) {
-  savingEdit.value = true;
-  const headers = { "X-Admin-Token": adminToken.value };
-  try {
-    editForm.artist = normalizeArtist(editForm.artist);
-    const spotifyLink = normalizeExternalUrl(editForm.spotify_link);
-    const youtubeLink = normalizeExternalUrl(editForm.youtube_link);
-    if (!isValidHttpUrl(spotifyLink)) throw new Error("Enter a valid Spotify URL.");
-    if (!isValidHttpUrl(youtubeLink)) throw new Error("Enter a valid YouTube URL.");
-
-    let imageUrl = track.image_url;
-    let audioUrl = track.audio_url;
-    let duration = track.duration;
-
-    if (editForm.coverFile) {
-      const coverFormData = new FormData();
-      coverFormData.append("image", editForm.coverFile);
-      const coverRes = await axios.post(`${API_URL}/upload/cover`, coverFormData, { headers });
-      imageUrl = coverRes.data?.url || imageUrl;
-    }
-
-    if (editForm.audioFile) {
-      const audioFormData = new FormData();
-      audioFormData.append("audio", editForm.audioFile);
-      const audioRes = await axios.post(`${API_URL}/upload/audio`, audioFormData, { headers });
-      audioUrl = audioRes.data?.url || audioUrl;
-      duration = editForm.duration || duration;
-    }
-
-    await axios.put(
-      `${API_URL}/tracks/${track.id}`,
-      {
-        title: editForm.title.trim(),
-        artist: editForm.artist.trim(),
-        genre: editForm.genre.trim(),
-        release_date: editForm.release_date,
-        image_url: imageUrl,
-        audio_url: audioUrl || null,
-        spotify_link: spotifyLink || null,
-        youtube_link: youtubeLink || null,
-        duration: duration || null,
-      },
-      { headers }
-    );
-
-    editingId.value = null;
-    clearObjectUrl(editCoverPreviewUrl);
-    clearObjectUrl(editAudioPreviewUrl);
-    await fetchTracks();
-  } catch (error) {
-    if (error.response?.status === 401) logout();
-    else alert(error.response?.data?.message || error.message || "Update failed.");
-  } finally {
-    savingEdit.value = false;
-  }
-}
-
-function confirmDelete(track) {
-  trackToDelete.value = track;
-}
-
-async function doDelete() {
-  if (!trackToDelete.value) return;
-  deleting.value = true;
-  const headers = { "X-Admin-Token": adminToken.value };
-  try {
-    await axios.delete(`${API_URL}/tracks/${trackToDelete.value.id}`, { headers });
-    trackToDelete.value = null;
-    await fetchTracks();
-  } catch (error) {
-    if (error.response?.status === 401) logout();
-    else alert(error.response?.data?.message || error.message || "Delete failed.");
-  } finally {
-    deleting.value = false;
   }
 }
 </script>
