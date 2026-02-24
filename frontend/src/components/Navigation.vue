@@ -14,7 +14,7 @@
       <ul class="hidden md:flex gap-8 text-white">
         <li><a href="#home" class="nav-link" @click.prevent="scrollTo('#home')">Home</a></li>
         <li><a href="#about" class="nav-link" @click.prevent="scrollTo('#about')">About</a></li>
-        <li><a href="#music" class="nav-link" @click.prevent="scrollTo('#music')">Music</a></li>
+        <li><a href="#all-tracks" class="nav-link" @click.prevent="scrollTo('#all-tracks')">Music</a></li>
         <li><a href="#contact" class="nav-link" @click.prevent="scrollTo('#contact')">Contact</a></li>
       </ul>
 
@@ -32,7 +32,7 @@
       <ul class="px-4 py-3 space-y-1 text-white">
         <li><a href="#home" class="mobile-nav-link" @click.prevent="scrollToAndClose('#home')">Home</a></li>
         <li><a href="#about" class="mobile-nav-link" @click.prevent="scrollToAndClose('#about')">About</a></li>
-        <li><a href="#music" class="mobile-nav-link" @click.prevent="scrollToAndClose('#music')">Music</a></li>
+        <li><a href="#all-tracks" class="mobile-nav-link" @click.prevent="scrollToAndClose('#all-tracks')">Music</a></li>
         <li><a href="#contact" class="mobile-nav-link" @click.prevent="scrollToAndClose('#contact')">Contact</a></li>
       </ul>
     </div>
@@ -44,7 +44,9 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const logoUrl = ref('http://localhost:8000/assets/images/logos/Anmi%20Beatz%20Logo%201.png');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:8000';
+const LOGO_PATH = '/assets/images/logos/Anmi%20Beatz%20Logo%201.png';
+const logoUrl = ref(`${API_BASE}${LOGO_PATH}`);
 const fallbackLogo = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect fill="%2306b6d4" width="40" height="40" rx="4"/><text fill="white" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14">AB</text></svg>');
 const isMenuOpen = ref(false);
 

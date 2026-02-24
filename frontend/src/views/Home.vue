@@ -28,84 +28,10 @@
         <p class="text-gray-400 text-lg max-w-4xl">Anmi Beatz is a Filipino music producer. Stream the latest beats and tracks.</p>
       </section>
 
-      <section id="music" class="py-20 w-full px-4 sm:px-8 xl:px-12 scroll-mt-20">
-        <!-- Search & Filter -->
-        <div class="search-filter-glass mb-12 p-6 rounded-2xl">
-          <p v-if="loadError" class="mb-4 text-sm text-red-400">{{ loadError }}</p>
-          <div class="flex flex-col md:flex-row gap-4 mb-4">
-            <div class="flex-1 relative">
-              <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400/80"></i>
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="Search by title or artist..."
-                class="input-neon w-full pl-12 pr-4 py-3 rounded-xl bg-black/40 border border-cyan-500/30 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
-              >
-            </div>
-            <div class="flex flex-wrap gap-2 items-center">
-              <div class="filter-select-wrap">
-                <select
-                  v-model="filterGenre"
-                  class="filter-select input-neon rounded-xl bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all"
-                  :class="{ 'with-clear': !!filterGenre }"
-                >
-                  <option value="">Genre</option>
-                  <option v-for="g in genres" :key="g" :value="g">{{ g }}</option>
-                </select>
-                <button
-                  v-if="filterGenre"
-                  type="button"
-                  @click="filterGenre = ''"
-                  class="filter-clear-btn"
-                  title="Clear genre"
-                  aria-label="Clear genre"
-                >
-                  <i class="fas fa-times"></i>
-                </button>
-                <span class="filter-chevron" aria-hidden="true">
-                  <i class="fas fa-chevron-down"></i>
-                </span>
-              </div>
-              <div class="filter-select-wrap">
-                <select
-                  v-model="sortBy"
-                  class="filter-select input-neon rounded-xl bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all"
-                  :class="{ 'with-clear': !!sortBy }"
-                >
-                  <option value="">Sort by</option>
-                  <option value="artist">Artist Name</option>
-                  <option value="title">Title</option>
-                  <option value="genre">Genre</option>
-                  <option value="release_date">Date</option>
-                </select>
-                <button
-                  v-if="sortBy"
-                  type="button"
-                  @click="sortBy = ''"
-                  class="filter-clear-btn"
-                  title="Clear sort"
-                  aria-label="Clear sort"
-                >
-                  <i class="fas fa-times"></i>
-                </button>
-                <span class="filter-chevron" aria-hidden="true">
-                  <i class="fas fa-chevron-down"></i>
-                </span>
-              </div>
-              <button
-                type="button"
-                @click="toggleSortDirection"
-                class="h-[50px] w-[50px] rounded-xl border border-blue-500/40 bg-black/40 text-cyan-300 hover:text-cyan-200 hover:border-cyan-300/70 transition"
-                :title="sortDirection === 'asc' ? 'Ascending' : 'Descending'"
-                aria-label="Toggle sort direction"
-              >
-                <i :class="sortDirection === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
-              </button>
-            </div>
-          </div>
-          <p class="text-sm text-gray-500">Showing {{ filteredTracks.length }} track(s)</p>
-        </div>
-
+      <section id="music" class="music-section py-20 w-full px-4 sm:px-8 xl:px-12 scroll-mt-20">
+        <!--
+        Featured section is temporarily disabled.
+        Keep this block for quick reuse later.
         <div class="mb-16">
           <h2 class="section-title mb-8">Featured</h2>
           <div class="featured-grid">
@@ -117,8 +43,9 @@
             />
           </div>
         </div>
+        -->
 
-        <div>
+        <div id="all-tracks" class="scroll-mt-24">
           <div class="flex items-center gap-3 mb-8">
             <h2 class="section-title mb-0">All Tracks</h2>
             <div class="view-toggle" role="group" aria-label="View mode">
@@ -148,6 +75,65 @@
                 <i class="fas fa-list"></i>
               </button>
             </div>
+          </div>
+
+          <div class="search-filter-glass all-tracks-filters mb-7 p-4 rounded-xl">
+            <p v-if="loadError" class="mb-3 text-sm text-red-400">{{ loadError }}</p>
+            <div class="filters-row mb-3">
+              <div class="filter-search-wrap relative">
+                <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-cyan-400/80 text-sm"></i>
+                <input
+                  v-model="searchQuery"
+                  type="text"
+                  placeholder="Search by title or artist..."
+                  class="filter-input input-neon w-full pl-10 pr-3 rounded-lg bg-black/40 border border-cyan-500/30 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                >
+              </div>
+              <div class="filters-secondary">
+                <div class="filter-select-wrap">
+                  <select
+                    v-model="filterGenre"
+                    class="filter-select input-neon rounded-lg bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all"
+                    aria-label="Genre"
+                  >
+                    <option value="">All Genre</option>
+                    <optgroup label="Genre">
+                      <option v-for="g in genres" :key="g" :value="g">{{ g }}</option>
+                    </optgroup>
+                  </select>
+                  <span class="filter-chevron" aria-hidden="true">
+                    <i class="fas fa-chevron-down"></i>
+                  </span>
+                </div>
+                <div class="filter-select-wrap">
+                  <select
+                    v-model="sortBy"
+                    class="filter-select input-neon rounded-lg bg-black/40 border border-sky-500/30 text-white focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all"
+                    aria-label="Sort by"
+                  >
+                    <optgroup label="Sort by">
+                      <option value="artist">Artist Name</option>
+                      <option value="title">Title</option>
+                      <option value="genre">Genre</option>
+                      <option value="release_date">Date</option>
+                    </optgroup>
+                  </select>
+                  <span class="filter-chevron" aria-hidden="true">
+                    <i class="fas fa-chevron-down"></i>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  @click="toggleSortDirection"
+                  class="sort-dir-btn rounded-lg border border-blue-500/40 bg-black/40 text-cyan-300 hover:text-cyan-200 hover:border-cyan-300/70 transition"
+                  :title="sortDirection === 'asc' ? 'Ascending' : 'Descending'"
+                  aria-label="Toggle sort direction"
+                >
+                  <i :class="sortDirection === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-sm text-gray-500">Showing {{ filteredTracks.length }} of {{ totalTrackCount }} tracks</p>
           </div>
 
           <TransitionGroup v-if="viewMode === 'tiles'" name="track-list" tag="div" class="all-tracks-grid">
@@ -218,8 +204,10 @@ import TrackCard from '../components/TrackCard.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:8000';
+const LOGO_PATH = '/assets/images/logos/Anmi%20Beatz%20Logo%201.png';
 
-const logoUrl = ref('http://localhost:8000/assets/images/logos/Anmi%20Beatz%20Logo%201.png');
+const logoUrl = ref(`${API_BASE}${LOGO_PATH}`);
 const fallbackLogo = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect fill="%2310b981" width="128" height="128" rx="8"/><text fill="white" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="48">AB</text></svg>');
 
 function onLogoError(e) {
@@ -233,16 +221,15 @@ const viewMode = ref('tiles');
 const loadError = ref('');
 const searchQuery = ref('');
 const filterGenre = ref('');
-const sortBy = ref('');
-const sortDirection = ref('desc');
+const sortBy = ref('artist');
+const sortDirection = ref('asc');
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:8000';
 const trackPlaceholderImage =
   'data:image/svg+xml,' +
   encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect fill="%231e293b" width="96" height="96"/><text fill="%2394a3b8" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="10">No cover</text></svg>'
   );
-const sortByKey = computed(() => sortBy.value || 'release_date');
+const sortByKey = computed(() => sortBy.value || 'artist');
 
 function dateToTime(value) {
   if (!value) return 0;
@@ -264,8 +251,13 @@ const genres = computed(() => {
   });
   return Array.from(set).sort();
 });
+const totalTrackCount = computed(() => tracks.value.length);
 
-const featuredTracks = computed(() => tracks.value.filter(t => t.featured));
+/*
+Featured section is currently hidden in the template.
+Keep this logic for later reuse when Featured is enabled again.
+const featuredTracks = computed(() => tracks.value.filter((t) => t.featured));
+*/
 
 const filteredTracks = computed(() => {
   let list = tracks.value;
@@ -357,7 +349,7 @@ function previousTrack() {
 }
 
 function scrollToMusic() {
-  document.getElementById('music')?.scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('all-tracks')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 
@@ -402,53 +394,74 @@ function scrollToMusic() {
   border: 1px solid rgba(6, 182, 212, 0.15);
   box-shadow: 0 0 30px rgba(6, 182, 212, 0.08);
 }
+.all-tracks-filters {
+  max-width: 54rem;
+}
+.filters-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.filter-search-wrap {
+  flex: 1 1 18rem;
+  min-width: 14rem;
+}
+.filters-secondary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.filter-input {
+  height: 2.55rem;
+}
+.music-section {
+  min-height: calc(100svh - 5rem);
+  padding-bottom: clamp(7rem, 12vh, 10rem);
+}
 .filter-select-wrap {
   position: relative;
+  width: 10.5rem;
+  flex: 0 0 10.5rem;
 }
 .filter-select {
-  min-width: 170px;
-  height: 50px;
-  padding: 0.7rem 2.1rem 0.7rem 1rem;
+  width: 100%;
+  height: 2.55rem;
+  padding: 0.54rem 1.65rem 0.54rem 0.75rem;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-}
-.filter-select.with-clear {
-  padding-right: 4.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.95rem;
 }
 .filter-select::-ms-expand {
   display: none;
 }
-.filter-clear-btn {
-  position: absolute;
-  top: 50%;
-  right: 1.9rem;
-  transform: translateY(-50%);
-  height: 1.35rem;
-  width: 1.35rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(56, 189, 248, 0.55);
-  background: rgba(2, 12, 26, 0.82);
-  color: #67e8f9;
-  font-size: 0.56rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+.filter-select option {
+  color: #f8fafc;
+  background: #0b1220;
 }
-.filter-clear-btn:hover {
-  border-color: rgba(125, 211, 252, 0.8);
-  color: #cffafe;
-  background: rgba(8, 27, 47, 0.95);
+.filter-select optgroup {
+  color: #67e8f9;
+  background: #0b1220;
+  font-weight: 700;
 }
 .filter-chevron {
   position: absolute;
   top: 50%;
-  right: 0.78rem;
+  right: 0.6rem;
   transform: translateY(-50%);
   color: rgba(125, 211, 252, 0.9);
-  font-size: 0.74rem;
+  font-size: 0.6rem;
   pointer-events: none;
+}
+.sort-dir-btn {
+  height: 2.55rem;
+  width: 2.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .input-neon:focus {
   box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
@@ -629,9 +642,57 @@ function scrollToMusic() {
   background: linear-gradient(135deg, #67e8f9 0%, #7dd3fc 100%);
 }
 @media (max-width: 639px) {
+  .all-tracks-filters {
+    max-width: 100%;
+    padding: 0.7rem;
+  }
+  .filters-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    align-items: center;
+  }
+  .filter-search-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .filters-secondary {
+    flex: 0 0 auto;
+    min-width: 0;
+    gap: 0.3rem;
+    flex-wrap: nowrap;
+  }
+  .filter-input {
+    height: 2.35rem;
+    padding-left: 2.1rem;
+    font-size: 0.88rem;
+  }
+  .filters-secondary .filter-select-wrap {
+    width: 5.9rem;
+    min-width: 5.9rem;
+    flex: 0 0 5.9rem;
+  }
+  .filter-select {
+    height: 2.35rem;
+    font-size: 0.84rem;
+    padding: 0.4rem 1.15rem 0.4rem 0.52rem;
+  }
+  .filter-chevron {
+    right: 0.42rem;
+    font-size: 0.52rem;
+  }
+  .sort-dir-btn {
+    height: 2.35rem;
+    width: 2.35rem;
+    flex: 0 0 2.35rem;
+  }
   .featured-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
+  }
+  .all-tracks-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
   }
   .view-btn {
     height: 2.2rem;
@@ -651,7 +712,9 @@ function scrollToMusic() {
   }
   .all-tracks-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.65rem;
+    grid-template-rows: repeat(10, minmax(0, auto));
+    grid-auto-flow: column;
+    gap: 0.65rem 0.75rem;
   }
 }
 </style>
