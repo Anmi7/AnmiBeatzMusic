@@ -207,7 +207,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:8000';
 const LOGO_PATH = '/assets/images/logos/Anmi%20Beatz%20Logo%201.png';
 
-const logoUrl = ref(`${API_BASE}${LOGO_PATH}`);
+const logoUrl = ref(LOGO_PATH);
 const fallbackLogo = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect fill="%2310b981" width="128" height="128" rx="8"/><text fill="white" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="48">AB</text></svg>');
 
 function onLogoError(e) {

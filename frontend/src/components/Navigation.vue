@@ -44,9 +44,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:8000';
 const LOGO_PATH = '/assets/images/logos/Anmi%20Beatz%20Logo%201.png';
-const logoUrl = ref(`${API_BASE}${LOGO_PATH}`);
+const logoUrl = ref(LOGO_PATH);
 const fallbackLogo = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect fill="%2306b6d4" width="40" height="40" rx="4"/><text fill="white" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14">AB</text></svg>');
 const isMenuOpen = ref(false);
 
