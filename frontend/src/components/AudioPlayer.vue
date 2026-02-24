@@ -225,6 +225,7 @@ const formatTime = (seconds) => {
 const getAudioUrl = (url) => {
   if (!url) return "";
   if (typeof url === "string" && url.startsWith("http")) return url;
+  if (typeof url === "string" && (url.startsWith("/assets/") || url.startsWith("/audio/")) ) return url;
   return `${API_BASE}${url.startsWith("/") ? url : "/" + url}`;
 };
 
@@ -237,6 +238,7 @@ const placeholderImage =
 const getImageUrl = (url) => {
   if (!url) return placeholderImage;
   if (typeof url === "string" && url.startsWith("http")) return url;
+  if (typeof url === "string" && (url.startsWith("/assets/") || url.startsWith("/audio/")) ) return url;
   return `${API_BASE}${url.startsWith("/") ? url : "/" + url}`;
 };
 

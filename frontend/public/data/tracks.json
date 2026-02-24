@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "title": "Dreams & Nightmares",
+    "artist": "Anmi Beatz",
+    "genre": "Hip-hop",
+    "image_url": "/assets/images/music-covers/Space Cake.jpg",
+    "audio_url": "",
+    "youtube_link": "",
+    "spotify_link": "",
+    "release_date": "2024-01-15",
+    "featured": true,
+    "plays": 125000,
+    "duration": "3:45"
+  },
+  {
+    "id": 2,
+    "title": "Midnight Vibes",
+    "artist": "Anmi Beatz",
+    "genre": "Trap",
+    "image_url": "/assets/images/music-covers/Space Cake.jpg",
+    "audio_url": "",
+    "youtube_link": "",
+    "spotify_link": "",
+    "release_date": "2024-01-10",
+    "featured": true,
+    "plays": 98000,
+    "duration": "2:58"
+  },
+  {
+    "id": 3,
+    "title": "Urban Pulse",
+    "artist": "Anmi Beatz",
+    "genre": "Hip-hop",
+    "image_url": "/assets/images/music-covers/Space Cake.jpg",
+    "audio_url": "",
+    "youtube_link": "",
+    "spotify_link": "",
+    "release_date": "2024-01-05",
+    "featured": false,
+    "plays": 75000,
+    "duration": "3:22"
+  },
+  {
+    "id": 4,
+    "title": "Neon Nights",
+    "artist": "Anmi Beatz",
+    "genre": "Electronic",
+    "image_url": "/assets/images/music-covers/Space Cake.jpg",
+    "audio_url": "",
+    "youtube_link": "",
+    "spotify_link": "",
+    "release_date": "2024-01-01",
+    "featured": false,
+    "plays": 52000,
+    "duration": "4:15"
+  }
+]

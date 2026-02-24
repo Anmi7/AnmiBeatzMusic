@@ -206,6 +206,7 @@ import AudioPlayer from '../components/AudioPlayer.vue';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'http://localhost:8000';
 const LOGO_PATH = '/assets/images/logos/Anmi%20Beatz%20Logo%201.png';
+const LOCAL_TRACKS_PATH = '/data/tracks.json';
 
 const logoUrl = ref(LOGO_PATH);
 const fallbackLogo = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect fill="%2310b981" width="128" height="128" rx="8"/><text fill="white" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="48">AB</text></svg>');
@@ -300,6 +301,7 @@ function toggleSortDirection() {
 function getTrackImageUrl(url) {
   if (!url) return trackPlaceholderImage;
   if (typeof url === 'string' && url.startsWith('http')) return url;
+  if (typeof url === 'string' && (url.startsWith('/assets/') || url.startsWith('/audio/'))) return url;
   return `${API_BASE}${url.startsWith('/') ? url : '/' + url}`;
 }
 
@@ -317,8 +319,17 @@ async function fetchTracks() {
     tracks.value = Array.isArray(data) ? data : (data?.data ?? []);
   } catch (error) {
     console.error('Error fetching tracks:', error);
-    tracks.value = [];
-    loadError.value = error?.response?.data?.message || 'Failed to load tracks from backend.';
+    try {
+      const localResponse = await fetch(LOCAL_TRACKS_PATH);
+      if (!localResponse.ok) throw new Error(`Failed to load ${LOCAL_TRACKS_PATH}`);
+      const localData = await localResponse.json();
+      tracks.value = Array.isArray(localData) ? localData : [];
+      loadError.value = '';
+    } catch (localError) {
+      console.error('Error loading local tracks fallback:', localError);
+      tracks.value = [];
+      loadError.value = error?.response?.data?.message || 'Failed to load tracks from backend.';
+    }
   }
 }
 
