@@ -1,5 +1,14 @@
 <?php
 
+$defaultAllowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+];
+
+$envAllowedOrigins = array_filter(
+    array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGINS', '')))
+);
+
 return [
 
     /*
@@ -22,9 +31,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173', 'http://localhost:3000'],
+    'allowed_origins' => !empty($envAllowedOrigins) ? $envAllowedOrigins : $defaultAllowedOrigins,
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://.*\.vercel\.app$#',
+    ],
 
     'allowed_headers' => ['*'],
 
